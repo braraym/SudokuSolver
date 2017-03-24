@@ -26,6 +26,11 @@ bool Sudoku::invaliderValeur(int x, int y, int valeur)
 	return _cases[x+y*9].invaliderValeur(valeur);
 }
 
+bool Sudoku::estPossible(int x, int y, int valeur)
+{
+	return _cases[x+y*9].estPossible(valeur);
+}
+
 void Sudoku::ajouterATraiter(int x, int y)
 {
 	_aTraiterLignes[y] = true;
@@ -48,6 +53,27 @@ bool Sudoku::traiterLigne(int y)
 			}
 		}
 	}
+
+	for(int valeur = 1; valeur <= 9; valeur++)
+	{
+		int nombrePossible = 0;
+		int xPossible;
+		for(int x = 0; x <= 8; x++)
+		{
+			if(estPossible(x, y, valeur))
+			{
+				nombrePossible++;
+				xPossible = x;
+			}
+		}
+
+		if(nombrePossible == 1)
+		{
+			definirValeur(xPossible, y, valeur);
+			ajouterATraiter(xPossible, y);
+		}
+	}
+
 	return _aTraiterLignes[y];
 }
 
@@ -64,6 +90,27 @@ bool Sudoku::traiterColonne(int x)
 					ajouterATraiter(x, y2);
 		}
 	}
+
+	for(int valeur = 1; valeur <= 9; valeur++)
+	{
+		int nombrePossible = 0;
+		int yPossible;
+		for(int y = 0; y <= 8; y++)
+		{
+			if(estPossible(x, y, valeur))
+			{
+				nombrePossible++;
+				yPossible = y;
+			}
+		}
+
+		if(nombrePossible == 1)
+		{
+			definirValeur(x, yPossible, valeur);
+			ajouterATraiter(x, yPossible);
+		}
+	}
+
 	return _aTraiterColonnes[x];
 }
 
@@ -86,6 +133,33 @@ bool Sudoku::traiterBlock(int b)
 			}
 		}
 	}
+
+	for(int valeur = 1; valeur <= 9; valeur++)
+	{
+		int nombrePossible = 0;
+		int xPossible;
+		int yPossible;
+
+		for(int x = ((b%3)*3); x <= ((b%3)*3)+2; x++)
+		{
+			for(int y = b-(b%3); y <= (b-(b%3))+2; y++)
+			{
+				if(estPossible(x, y, valeur))
+				{
+					nombrePossible++;
+					xPossible = x;
+					yPossible = y;
+				}
+			}
+		}
+
+		if(nombrePossible == 1)
+		{
+			definirValeur(xPossible, yPossible, valeur);
+			ajouterATraiter(xPossible, yPossible);
+		}
+	}
+
 	return _aTraiterBlocks[b];
 }
 

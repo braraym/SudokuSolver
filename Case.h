@@ -8,4 +8,5 @@ class Case
 		Case();
 		bool definirValeur(int valeur);
 		bool invaliderValeur(int valeur);
+		bool estPossible(int valeur);
 };

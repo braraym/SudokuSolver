@@ -17,6 +17,7 @@ class Sudoku
 		bool definirValeur(int x, int y, int valeur);
 		int recupererValeur(int x, int y);
 		bool invaliderValeur(int x, int y, int valeur);
+		bool estPossible(int x, int y, int valeur);
 
 		void ajouterATraiter(int x, int y);
 		bool traiterLigne(int y);
