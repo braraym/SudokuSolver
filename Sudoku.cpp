@@ -12,10 +12,12 @@ Sudoku::Sudoku()
 		_aTraiterBlocks[i] = true;
 	}
 }
+
 bool Sudoku::definirValeur(int x, int y, int valeur)
 {
 	return _cases[x+y*9].definirValeur(valeur);
 }
+
 int Sudoku::recupererValeur(int x, int y)
 {
 	return _cases[x+y*9].Valeur;
@@ -35,12 +37,13 @@ void Sudoku::ajouterATraiter(int x, int y)
 {
 	_aTraiterLignes[y] = true;
 	_aTraiterColonnes[x] = true;
-	_aTraiterBlocks[numeroBlock(x, y)] = true;
+	_aTraiterBlocks[((x-(x%3))/3)+(y-(y%3))] = true;
 }
 
 bool Sudoku::traiterLigne(int y)
 {
 	_aTraiterLignes[y] = false;
+
 	for(int x = 0; x <= 8; x++)
 	{
 		int valeur = recupererValeur(x, y);
@@ -80,6 +83,7 @@ bool Sudoku::traiterLigne(int y)
 bool Sudoku::traiterColonne(int x)
 {
 	_aTraiterColonnes[x] = false;
+
 	for(int y = 0; y <= 8; y++)
 	{
 		int valeur = recupererValeur(x, y);
@@ -212,9 +216,4 @@ ostream & operator<<(ostream &stream, Sudoku sudoku)
 		stream << endl;
 	}
 	return stream;
-}
-
-int Sudoku::numeroBlock(int x, int y)
-{
-	return ((x-(x%3))/3)+(y-(y%3));
 }

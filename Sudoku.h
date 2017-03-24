@@ -10,8 +10,6 @@ class Sudoku
 		bool _aTraiterColonnes[9];
 		bool _aTraiterBlocks[9];
 
-		static int numeroBlock(int x, int y);
-
 	public:
 		Sudoku();
 		bool definirValeur(int x, int y, int valeur);
