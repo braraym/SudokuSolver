@@ -17,23 +17,25 @@ bool Case::definirValeur(int valeur)
 	for(int i = 0; i <= 8; i++)
 		_estPossible[i] = false;
 
+	_estPossible[valeur-1] = true;
+
 	return true;
 }
 
 bool Case::invaliderValeur(int valeur)
 {
-	if(Valeur != 0 || valeur < 1 || valeur > 9)
+	if(Valeur != 0 || valeur < 1 || valeur > 9 || !_estPossible[valeur-1])
 		return false;
 
 	_estPossible[valeur-1] = false;
 
 	int nombrePossible = 0;
-	int valeurPossible = 0;
-	for(int i = 0; i <= 8; i++)
+	int valeurPossible;
+	for(int v = 1; v <= 9; v++)
 	{
-		if(_estPossible[i])
+		if(_estPossible[v-1])
 		{
-			valeurPossible = i+1;
+			valeurPossible = v;
 			nombrePossible++;
 		}
 	}

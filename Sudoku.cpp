@@ -69,8 +69,8 @@ bool Sudoku::traiterLigne(int y)
 
 		if(nombrePossible == 1)
 		{
-			definirValeur(xPossible, y, valeur);
-			ajouterATraiter(xPossible, y);
+			if(definirValeur(xPossible, y, valeur))
+				ajouterATraiter(xPossible, y);
 		}
 	}
 
@@ -106,8 +106,8 @@ bool Sudoku::traiterColonne(int x)
 
 		if(nombrePossible == 1)
 		{
-			definirValeur(x, yPossible, valeur);
-			ajouterATraiter(x, yPossible);
+			if(definirValeur(x, yPossible, valeur))
+				ajouterATraiter(x, yPossible);
 		}
 	}
 
@@ -117,6 +117,7 @@ bool Sudoku::traiterColonne(int x)
 bool Sudoku::traiterBlock(int b)
 {
 	_aTraiterBlocks[b] = false;
+
 	for(int x = ((b%3)*3); x <= ((b%3)*3)+2; x++)
 	{
 		for(int y = b-(b%3); y <= (b-(b%3))+2; y++)
@@ -155,8 +156,8 @@ bool Sudoku::traiterBlock(int b)
 
 		if(nombrePossible == 1)
 		{
-			definirValeur(xPossible, yPossible, valeur);
-			ajouterATraiter(xPossible, yPossible);
+			if(definirValeur(xPossible, yPossible, valeur))
+				ajouterATraiter(xPossible, yPossible);
 		}
 	}
 
@@ -171,7 +172,6 @@ bool Sudoku::trouverSolution(ostream &stream)
 		traiter = false;
 		for(int i = 0; i <= 8; i++)
 		{
-
 			if(_aTraiterColonnes[i] && traiterColonne(i))
 			{
 				stream << "Colonne:" << i << endl;
