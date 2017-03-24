@@ -32,13 +32,9 @@ int main()
 		}
 	}
 
-	cerr << "SudokuSolver" << endl << sudoku << endl;
-	int retour = sudoku.trouverSolution(cerr) ? 0 : 1;
-
-	cerr << (retour == 0 ? "Complete solution" : "Incomplete solution") << endl;
-	cerr << sudoku << endl;
-
+	int retour = sudoku.trouverSolution() ? 0 : 1;
 	cout << sudoku;
 
+	cerr << (retour == 0 ? "Complete solution" : "Incomplete solution") << endl;
 	return retour;
 }

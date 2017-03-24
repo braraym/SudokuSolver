@@ -22,7 +22,7 @@ class Sudoku
 		bool traiterColonne(int x);
 		bool traiterBlock(int b);
 
-		bool trouverSolution(ostream &stream);
+		bool trouverSolution();
 };
 
 ostream & operator<<(ostream &stream, Sudoku sudoku);

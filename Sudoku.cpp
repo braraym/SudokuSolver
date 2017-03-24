@@ -168,7 +168,7 @@ bool Sudoku::traiterBlock(int b)
 	return _aTraiterBlocks[b];
 }
 
-bool Sudoku::trouverSolution(ostream &stream)
+bool Sudoku::trouverSolution()
 {
 	bool traiter = true;
 	while(traiter)
@@ -177,26 +177,14 @@ bool Sudoku::trouverSolution(ostream &stream)
 		for(int i = 0; i <= 8; i++)
 		{
 			if(_aTraiterColonnes[i] && traiterColonne(i))
-			{
-				stream << "Colonne:" << i << endl;
 				traiter = true;
-			}
 
 			if(_aTraiterLignes[i] && traiterLigne(i))
-			{
-				stream << "Ligne:" << i << endl;
 				traiter = true;
-			}
 
 			if(_aTraiterBlocks[i] && traiterBlock(i))
-			{
-				stream << "Block:" << i << endl;
 				traiter = true;
-			}
 		}
-
-		if(traiter)
-			stream << *this << endl;
 	}
 
 	for(int i = 0; i <= 80; i++)
