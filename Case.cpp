@@ -38,7 +38,10 @@ bool Case::invaliderValeur(int valeur)
 		}
 	}
 
-	return nombrePossible == 1 && definirValeur(valeurPossible);
+	if(nombrePossible == 1)
+		definirValeur(valeurPossible);
+
+	return true;
 }
 
 bool Case::estPossible(int valeur)
