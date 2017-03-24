@@ -211,7 +211,7 @@ ostream & operator<<(ostream &stream, Sudoku sudoku)
 	for(int y = 0; y <= 8; y++)
 	{
 		for(int x = 0; x <= 8; x++)
-			stream << " " << sudoku.recupererValeur(x, y) << " ";
+			stream << sudoku.recupererValeur(x, y);
 
 		stream << endl;
 	}
