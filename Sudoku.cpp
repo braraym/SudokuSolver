@@ -208,11 +208,14 @@ bool Sudoku::trouverSolution(ostream &stream)
 
 ostream & operator<<(ostream &stream, Sudoku sudoku)
 {
+	int valeur;
 	for(int y = 0; y <= 8; y++)
 	{
 		for(int x = 0; x <= 8; x++)
-			stream << sudoku.recupererValeur(x, y);
-
+		{
+			valeur = sudoku.recupererValeur(x, y);
+			stream << (valeur != 0 ? to_string(valeur) : " ");
+		}
 		stream << endl;
 	}
 	return stream;
