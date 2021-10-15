@@ -1,12 +1,14 @@
 class Case
 {
 	private:
-		bool _estPossible[9];
-	public:
-		int Valeur;
+		int _value;
+		bool _isValueValids[9];
 
+	public:
 		Case();
-		bool definirValeur(int valeur);
-		bool invaliderValeur(int valeur);
-		bool estPossible(int valeur);
+		Case(int value);
+		int getValue();
+		bool setValue(int value);
+		bool invalidateValue(int value);
+		bool isValueValid(int value);
 };

@@ -6,23 +6,23 @@ class Sudoku
 {
 	private:
 		Case _cases[81];
-		bool _aTraiterLignes[9];
-		bool _aTraiterColonnes[9];
-		bool _aTraiterBlocks[9];
+		bool _toProcessLines[9];
+		bool _toProcessColumns[9];
+		bool _toProcessBlocks[9];
 
 	public:
 		Sudoku();
-		bool definirValeur(int x, int y, int valeur);
-		int recupererValeur(int x, int y);
-		bool invaliderValeur(int x, int y, int valeur);
-		bool estPossible(int x, int y, int valeur);
+		bool setValue(int x, int y, int value);
+		int getValue(int x, int y);
+		bool invalidateValue(int x, int y, int value);
+		bool isValueValid(int x, int y, int value);
 
-		void ajouterATraiter(int x, int y);
-		bool traiterLigne(int y);
-		bool traiterColonne(int x);
-		bool traiterBlock(int b);
+		void markToProcess(int x, int y);
+		bool processLine(int y);
+		bool processColumn(int x);
+		bool processBlock(int b);
 
-		bool trouverSolution();
+		bool findSolution();
 };
 
 ostream & operator<<(ostream &stream, Sudoku sudoku);

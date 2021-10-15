@@ -1,52 +1,59 @@
 #include "Case.h"
 using namespace std;
 
-Case::Case()
+Case::Case() : Case(0) { }
+
+Case::Case(int value = 0)
 {
-	Valeur = 0;
+	_value = value;
 	for(int i = 0; i <= 8; i++)
-		_estPossible[i] = true;
+		_isValueValids[i] = value == 0;
 }
 
-bool Case::definirValeur(int valeur)
+int Case::getValue()
 {
-	if(Valeur != 0 || valeur < 1 || valeur > 9)
+	return _value;
+}
+
+bool Case::setValue(int value)
+{
+	if(_value != 0 || value < 1 || value > 9)
 		return false;
 
-	Valeur = valeur;
+	_value = value;
 	for(int i = 0; i <= 8; i++)
-		_estPossible[i] = false;
+		_isValueValids[i] = false;
 
-	_estPossible[valeur-1] = true;
+	_isValueValids[value-1] = true;
 
 	return true;
 }
 
-bool Case::invaliderValeur(int valeur)
+bool Case::invalidateValue(int value)
 {
-	if(Valeur != 0 || valeur < 1 || valeur > 9 || !_estPossible[valeur-1])
+	if(_value != 0 || value < 1 || value > 9 || !_isValueValids[value-1])
 		return false;
 
-	_estPossible[valeur-1] = false;
+	_isValueValids[value-1] = false;
 
-	int nombrePossible = 0;
-	int valeurPossible;
-	for(int v = 1; v <= 9; v++)
+	//Check if only a single possible value is remaining
+	int newValue = 0;
+	for(int i = 0; i <= 8; i++)
 	{
-		if(_estPossible[v-1])
+		if(_isValueValids[i])
 		{
-			valeurPossible = v;
-			nombrePossible++;
+			if(newValue != 0)
+				return true;
+
+			newValue = i + 1;
 		}
 	}
 
-	if(nombrePossible == 1)
-		definirValeur(valeurPossible);
-
+	_value = newValue;
 	return true;
 }
 
-bool Case::estPossible(int valeur)
+bool Case::isValueValid(int value)
 {
-	return _estPossible[valeur-1];
+	return _isValueValids[value-1];
 }

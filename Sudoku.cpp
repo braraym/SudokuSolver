@@ -7,141 +7,141 @@ Sudoku::Sudoku()
 
 	for(int i = 0; i <= 8; i++)
 	{
-		_aTraiterLignes[i] = true;
-		_aTraiterColonnes[i] = true;
-		_aTraiterBlocks[i] = true;
+		_toProcessLines[i] = true;
+		_toProcessColumns[i] = true;
+		_toProcessBlocks[i] = true;
 	}
 }
 
-bool Sudoku::definirValeur(int x, int y, int valeur)
+bool Sudoku::setValue(int x, int y, int value)
 {
-	return _cases[x+y*9].definirValeur(valeur);
+	return _cases[x+y*9].setValue(value);
 }
 
-int Sudoku::recupererValeur(int x, int y)
+int Sudoku::getValue(int x, int y)
 {
-	return _cases[x+y*9].Valeur;
+	return _cases[x+y*9].getValue();
 }
 
-bool Sudoku::invaliderValeur(int x, int y, int valeur)
+bool Sudoku::invalidateValue(int x, int y, int value)
 {
-	return _cases[x+y*9].invaliderValeur(valeur);
+	return _cases[x+y*9].invalidateValue(value);
 }
 
-bool Sudoku::estPossible(int x, int y, int valeur)
+bool Sudoku::isValueValid(int x, int y, int value)
 {
-	return _cases[x+y*9].estPossible(valeur);
+	return _cases[x+y*9].isValueValid(value);
 }
 
-void Sudoku::ajouterATraiter(int x, int y)
+void Sudoku::markToProcess(int x, int y)
 {
-	_aTraiterLignes[y] = true;
-	_aTraiterColonnes[x] = true;
-	_aTraiterBlocks[((x-(x%3))/3)+(y-(y%3))] = true;
+	_toProcessLines[y] = true;
+	_toProcessColumns[x] = true;
+	_toProcessBlocks[((x-(x%3))/3)+(y-(y%3))] = true;
 }
 
-bool Sudoku::traiterLigne(int y)
+bool Sudoku::processLine(int y)
 {
-	_aTraiterLignes[y] = false;
+	_toProcessLines[y] = false;
 
 	for(int x = 0; x <= 8; x++)
 	{
-		int valeur = recupererValeur(x, y);
-		if(valeur != 0)
+		int value = getValue(x, y);
+		if(value != 0)
 		{
 			for(int x2 = 0; x2 <= 8; x2++)
 			{
-				if(invaliderValeur(x2, y, valeur))
-					ajouterATraiter(x2, y);
+				if(invalidateValue(x2, y, value))
+					markToProcess(x2, y);
 			}
 		}
 	}
 
-	for(int valeur = 1; valeur <= 9; valeur++)
+	for(int value = 1; value <= 9; value++)
 	{
-		int nombrePossible = 0;
+		int validCount = 0;
 		int xPossible;
 		for(int x = 0; x <= 8; x++)
 		{
-			if(estPossible(x, y, valeur))
+			if(isValueValid(x, y, value))
 			{
-				nombrePossible++;
+				validCount++;
 				xPossible = x;
 			}
 		}
 
-		if(nombrePossible == 1)
+		if(validCount == 1)
 		{
-			if(definirValeur(xPossible, y, valeur))
-				ajouterATraiter(xPossible, y);
+			if(setValue(xPossible, y, value))
+				markToProcess(xPossible, y);
 		}
 	}
 
-	return _aTraiterLignes[y];
+	return _toProcessLines[y];
 }
 
-bool Sudoku::traiterColonne(int x)
+bool Sudoku::processColumn(int x)
 {
-	_aTraiterColonnes[x] = false;
+	_toProcessColumns[x] = false;
 
 	for(int y = 0; y <= 8; y++)
 	{
-		int valeur = recupererValeur(x, y);
-		if(valeur != 0)
+		int value = getValue(x, y);
+		if(value != 0)
 		{
 			for(int y2 = 0; y2 <= 8; y2++)
-				if(invaliderValeur(x, y2, valeur))
-					ajouterATraiter(x, y2);
+				if(invalidateValue(x, y2, value))
+					markToProcess(x, y2);
 		}
 	}
 
-	for(int valeur = 1; valeur <= 9; valeur++)
+	for(int value = 1; value <= 9; value++)
 	{
-		int nombrePossible = 0;
+		int validCount = 0;
 		int yPossible;
 		for(int y = 0; y <= 8; y++)
 		{
-			if(estPossible(x, y, valeur))
+			if(isValueValid(x, y, value))
 			{
-				nombrePossible++;
+				validCount++;
 				yPossible = y;
 			}
 		}
 
-		if(nombrePossible == 1)
+		if(validCount == 1)
 		{
-			if(definirValeur(x, yPossible, valeur))
-				ajouterATraiter(x, yPossible);
+			if(setValue(x, yPossible, value))
+				markToProcess(x, yPossible);
 		}
 	}
 
-	return _aTraiterColonnes[x];
+	return _toProcessColumns[x];
 }
 
-bool Sudoku::traiterBlock(int b)
+bool Sudoku::processBlock(int b)
 {
-	_aTraiterBlocks[b] = false;
+	_toProcessBlocks[b] = false;
 
 	for(int x = ((b%3)*3); x <= ((b%3)*3)+2; x++)
 	{
 		for(int y = b-(b%3); y <= (b-(b%3))+2; y++)
 		{
-			int valeur = recupererValeur(x, y);
-			if(valeur != 0)
+			int value = getValue(x, y);
+			if(value != 0)
 			{
 				for(int x2 = ((b%3)*3); x2 <= ((b%3)*3)+2; x2++)
 				{
 					for(int y2 = b-(b%3); y2 <= (b-(b%3))+2; y2++)
-						if(invaliderValeur(x2, y2, valeur))
-							ajouterATraiter(x2, y2);
+						if(invalidateValue(x2, y2, value))
+							markToProcess(x2, y2);
 				}
 			}
 		}
 	}
 
-	for(int valeur = 1; valeur <= 9; valeur++)
+	for(int value = 1; value <= 9; value++)
 	{
-		int nombrePossible = 0;
+		int validCount = 0;
 		int xPossible;
 		int yPossible;
 
@@ -149,46 +149,48 @@ bool Sudoku::traiterBlock(int b)
 		{
 			for(int y = b-(b%3); y <= (b-(b%3))+2; y++)
 			{
-				if(estPossible(x, y, valeur))
+				if(isValueValid(x, y, value))
 				{
-					nombrePossible++;
+					validCount++;
 					xPossible = x;
 					yPossible = y;
 				}
 			}
 		}
 
-		if(nombrePossible == 1)
+		if(validCount == 1)
 		{
-			if(definirValeur(xPossible, yPossible, valeur))
-				ajouterATraiter(xPossible, yPossible);
+			if(setValue(xPossible, yPossible, value))
+				markToProcess(xPossible, yPossible);
 		}
 	}
 
-	return _aTraiterBlocks[b];
+	return _toProcessBlocks[b];
 }
 
-bool Sudoku::trouverSolution()
+bool Sudoku::findSolution()
 {
-	bool traiter = true;
-	while(traiter)
+	bool keepProcessing;
+
+	do
 	{
-		traiter = false;
+		keepProcessing = false;
 		for(int i = 0; i <= 8; i++)
 		{
-			if(_aTraiterColonnes[i] && traiterColonne(i))
-				traiter = true;
+			if(_toProcessColumns[i] && processColumn(i))
+				keepProcessing = true;
 
-			if(_aTraiterLignes[i] && traiterLigne(i))
-				traiter = true;
+			if(_toProcessLines[i] && processLine(i))
+				keepProcessing = true;
 
-			if(_aTraiterBlocks[i] && traiterBlock(i))
-				traiter = true;
+			if(_toProcessBlocks[i] && processBlock(i))
+				keepProcessing = true;
 		}
 	}
+	while(keepProcessing);
 
 	for(int i = 0; i <= 80; i++)
-		if(_cases[i].Valeur == 0)
+		if(_cases[i].getValue() == 0)
 			return false;
 
 	return true;
@@ -196,13 +198,13 @@ bool Sudoku::trouverSolution()
 
 ostream & operator<<(ostream &stream, Sudoku sudoku)
 {
-	int valeur;
+	int value;
 	for(int y = 0; y <= 8; y++)
 	{
 		for(int x = 0; x <= 8; x++)
 		{
-			valeur = sudoku.recupererValeur(x, y);
-			stream << (valeur != 0 ? to_string(valeur) : " ");
+			value = sudoku.getValue(x, y);
+			stream << (value != 0 ? to_string(value) : " ");
 		}
 		stream << endl;
 	}
