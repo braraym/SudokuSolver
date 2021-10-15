@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+#include <tuple>
 #include "Case.h"
 using namespace std;
 

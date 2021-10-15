@@ -56,19 +56,19 @@ bool Sudoku::processLine(int y)
 
 	for(int value = 1; value <= 9; value++)
 	{
-		int validCount = 0;
-		int xPossible;
+		std::vector<int> xPossibles;
 		for(int x = 0; x <= 8; x++)
-		{
 			if(isValueValid(x, y, value))
-			{
-				validCount++;
-				xPossible = x;
-			}
-		}
+				xPossibles.push_back(x);
 
-		if(validCount == 1)
-			setValue(xPossible, y, value);
+		if(xPossibles.size() == 1)
+		{
+			setValue(xPossibles.front(), y, value);
+		}
+		else if(false) //todo
+		{
+			//all valid cells for `value` are in the same block, so the value can't be on any other row in that block
+		}
 	}
 
 	return _toProcessLines[y];
@@ -88,19 +88,19 @@ bool Sudoku::processColumn(int x)
 
 	for(int value = 1; value <= 9; value++)
 	{
-		int validCount = 0;
-		int yPossible;
+		std::vector<int> yPossibles;
 		for(int y = 0; y <= 8; y++)
-		{
 			if(isValueValid(x, y, value))
-			{
-				validCount++;
-				yPossible = y;
-			}
-		}
+				yPossibles.push_back(y);
 
-		if(validCount == 1)
-			setValue(x, yPossible, value);
+		if(yPossibles.size() == 1)
+		{
+			setValue(x, yPossibles.front(), value);
+		}
+		else if(false) //todo
+		{
+			//all valid cells for `value` are in the same block, so the value can't be on any other column in that block
+		}
 	}
 
 	return _toProcessColumns[x];
@@ -124,25 +124,23 @@ bool Sudoku::processBlock(int b)
 
 	for(int value = 1; value <= 9; value++)
 	{
-		int validCount = 0;
-		int xPossible;
-		int yPossible;
+		std::vector<std::tuple<int, int>> xyPossibles;
 
 		for(int x = ((b%3)*3); x <= ((b%3)*3)+2; x++)
-		{
 			for(int y = b-(b%3); y <= (b-(b%3))+2; y++)
-			{
 				if(isValueValid(x, y, value))
-				{
-					validCount++;
-					xPossible = x;
-					yPossible = y;
-				}
-			}
-		}
+					xyPossibles.push_back(std::make_tuple(x, y));
 
-		if(validCount == 1)
-			setValue(xPossible, yPossible, value);
+
+		if(xyPossibles.size() == 1)
+		{
+			std::tuple<int, int> tuple = xyPossibles.front();
+			setValue(std::get<0>(tuple), std::get<1>(tuple), value);
+		}
+		else if(false) //todo
+		{
+			//all valid cells for `value` are in the same row/column for that block, so the value can't be on in any other block for that row/column
+		}
 	}
 
 	return _toProcessBlocks[b];
