@@ -13,19 +13,21 @@ Sudoku::Sudoku()
 	}
 }
 
-bool Sudoku::setValue(int x, int y, int value)
-{
-	return _cases[x+y*9].setValue(value);
-}
-
 int Sudoku::getValue(int x, int y)
 {
 	return _cases[x+y*9].getValue();
 }
 
-bool Sudoku::invalidateValue(int x, int y, int value)
+void Sudoku::setValue(int x, int y, int value)
 {
-	return _cases[x+y*9].invalidateValue(value);
+	if(_cases[x+y*9].setValue(value))
+		markToProcess(x, y);
+}
+
+void Sudoku::invalidateValue(int x, int y, int value)
+{
+	if(_cases[x+y*9].invalidateValue(value))
+		markToProcess(x, y);
 }
 
 bool Sudoku::isValueValid(int x, int y, int value)
@@ -48,13 +50,8 @@ bool Sudoku::processLine(int y)
 	{
 		int value = getValue(x, y);
 		if(value != 0)
-		{
 			for(int x2 = 0; x2 <= 8; x2++)
-			{
-				if(invalidateValue(x2, y, value))
-					markToProcess(x2, y);
-			}
-		}
+				invalidateValue(x2, y, value);
 	}
 
 	for(int value = 1; value <= 9; value++)
@@ -71,10 +68,7 @@ bool Sudoku::processLine(int y)
 		}
 
 		if(validCount == 1)
-		{
-			if(setValue(xPossible, y, value))
-				markToProcess(xPossible, y);
-		}
+			setValue(xPossible, y, value);
 	}
 
 	return _toProcessLines[y];
@@ -88,11 +82,8 @@ bool Sudoku::processColumn(int x)
 	{
 		int value = getValue(x, y);
 		if(value != 0)
-		{
 			for(int y2 = 0; y2 <= 8; y2++)
-				if(invalidateValue(x, y2, value))
-					markToProcess(x, y2);
-		}
+				invalidateValue(x, y2, value);
 	}
 
 	for(int value = 1; value <= 9; value++)
@@ -109,10 +100,7 @@ bool Sudoku::processColumn(int x)
 		}
 
 		if(validCount == 1)
-		{
-			if(setValue(x, yPossible, value))
-				markToProcess(x, yPossible);
-		}
+			setValue(x, yPossible, value);
 	}
 
 	return _toProcessColumns[x];
@@ -128,14 +116,9 @@ bool Sudoku::processBlock(int b)
 		{
 			int value = getValue(x, y);
 			if(value != 0)
-			{
 				for(int x2 = ((b%3)*3); x2 <= ((b%3)*3)+2; x2++)
-				{
 					for(int y2 = b-(b%3); y2 <= (b-(b%3))+2; y2++)
-						if(invalidateValue(x2, y2, value))
-							markToProcess(x2, y2);
-				}
-			}
+						invalidateValue(x2, y2, value);
 		}
 	}
 
@@ -159,10 +142,7 @@ bool Sudoku::processBlock(int b)
 		}
 
 		if(validCount == 1)
-		{
-			if(setValue(xPossible, yPossible, value))
-				markToProcess(xPossible, yPossible);
-		}
+			setValue(xPossible, yPossible, value);
 	}
 
 	return _toProcessBlocks[b];

@@ -12,9 +12,9 @@ class Sudoku
 
 	public:
 		Sudoku();
-		bool setValue(int x, int y, int value);
 		int getValue(int x, int y);
-		bool invalidateValue(int x, int y, int value);
+		void setValue(int x, int y, int value);
+		void invalidateValue(int x, int y, int value);
 		bool isValueValid(int x, int y, int value);
 
 		void markToProcess(int x, int y);
