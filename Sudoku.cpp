@@ -39,7 +39,7 @@ void Sudoku::markToProcess(int x, int y)
 {
 	_toProcessRow[y] = true;
 	_toProcessColumns[x] = true;
-	_toProcessBlocks[((x-(x%3))/3)+(y-(y%3))] = true;
+	_toProcessBlocks[_getBlock(x, y)] = true;
 }
 
 bool Sudoku::processRow(int y)
@@ -153,6 +153,11 @@ bool Sudoku::findSolution()
 	return true;
 }
 
+int Sudoku::_getBlock(int x, int y)
+{
+	return ((x-(x%3))/3)+(y-(y%3));
+}
+
 void Sudoku::_processPossibleCells(std::vector<std::tuple<int, int>> cellPossibles, int value)
 {
 	if(cellPossibles.size() == 1)
@@ -160,15 +165,99 @@ void Sudoku::_processPossibleCells(std::vector<std::tuple<int, int>> cellPossibl
 		std::tuple<int, int> cell = cellPossibles.front();
 		setValue(std::get<0>(cell), std::get<1>(cell), value);
 	}
-	else if(false) //todo
+	else if(_areCellsInSameBlock(cellPossibles))
 	{
 		//all valid cells for `value` are in the same block and line (row or column), so the value can't be on in any other block on that line (row or column)
+		std::tuple<int, int> cell = cellPossibles.front();
+		int cellX = std::get<0>(cell);
+		int cellY = std::get<1>(cell);
+		int cellBlock = _getBlock(cellX, cellY);
+
+		if(_areCellsInSameX(cellPossibles))
+		{
+			//invalidate values on row
+			int x = cellX;
+			for(int y = 0; y <= 8; y++)
+				if(_getBlock(x, y) != cellBlock)
+					invalidateValue(x, y, value);
+
+			//invalidate values in block
+			for(int x = ((cellBlock%3)*3); x <= ((cellBlock%3)*3)+2; x++)
+				if(x != cellX)
+					for(int y = cellBlock-(cellBlock%3); y <= (cellBlock-(cellBlock%3))+2; y++)
+						invalidateValue(x, y, value);
+		}
+		else if(_areCellsInSameY(cellPossibles))
+		{
+			//invalidate values on column
+			int y = cellY;
+			for(int x = 0; x <= 8; x++)
+				if(_getBlock(x, y) != cellBlock)
+					invalidateValue(x, y, value);
+
+			//invalidate values in block
+			for(int x = ((cellBlock%3)*3); x <= ((cellBlock%3)*3)+2; x++)
+				for(int y = cellBlock-(cellBlock%3); y <= (cellBlock-(cellBlock%3))+2; y++)
+					if(y != cellY)
+						invalidateValue(x, y, value);
+		}
 	}
 }
 
-bool Sudoku::_areCellsInSameBlockAndLine(std::vector<std::tuple<int, int>> cells)
+bool Sudoku::_areCellsInSameX(std::vector<std::tuple<int, int>> cells)
 {
-	return false;
+	int x = -1;
+
+	for(int i = 0; i < cells.size(); i++)
+	{
+		std::tuple<int, int> cell = cells.at(i);
+		int cellX = std::get<0>(cell);
+
+		if(x == -1)
+			x = cellX;
+		else if(cellX != x)
+			return false;
+	}
+
+	return true;
+}
+
+bool Sudoku::_areCellsInSameY(std::vector<std::tuple<int, int>> cells)
+{
+	int y = -1;
+
+	for(int i = 0; i < cells.size(); i++)
+	{
+		std::tuple<int, int> cell = cells.at(i);
+		int cellY = std::get<1>(cell);
+
+		if(y == -1)
+			y = cellY;
+		else if(cellY != y)
+			return false;
+	}
+
+	return true;
+}
+
+bool Sudoku::_areCellsInSameBlock(std::vector<std::tuple<int, int>> cells)
+{
+	int block = -1;
+
+	for(int i = 0; i < cells.size(); i++)
+	{
+		std::tuple<int, int> cell = cells.at(i);
+		int cellX = std::get<0>(cell);
+		int cellY = std::get<1>(cell);
+		int cellBlock = _getBlock(cellX, cellY);
+
+		if(block == -1)
+			block = cellBlock;
+		else if(cellBlock != block)
+			return false;
+	}
+
+	return true;
 }
 
 ostream & operator<<(ostream &stream, Sudoku sudoku)

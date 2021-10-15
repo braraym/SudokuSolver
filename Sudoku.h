@@ -11,8 +11,11 @@ class Sudoku
 		bool _toProcessRow[9];
 		bool _toProcessColumns[9];
 		bool _toProcessBlocks[9];
+		int _getBlock(int x, int y);
 		void _processPossibleCells(std::vector<std::tuple<int, int>> cells, int value);
-		bool _areCellsInSameBlockAndLine(std::vector<std::tuple<int, int>> cells);
+		bool _areCellsInSameX(std::vector<std::tuple<int, int>> cells);
+		bool _areCellsInSameY(std::vector<std::tuple<int, int>> cells);
+		bool _areCellsInSameBlock(std::vector<std::tuple<int, int>> cells);
 
 	public:
 		Sudoku();
