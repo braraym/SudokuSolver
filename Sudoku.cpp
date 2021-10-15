@@ -7,7 +7,7 @@ Sudoku::Sudoku()
 
 	for(int i = 0; i <= 8; i++)
 	{
-		_toProcessLines[i] = true;
+		_toProcessRow[i] = true;
 		_toProcessColumns[i] = true;
 		_toProcessBlocks[i] = true;
 	}
@@ -37,14 +37,14 @@ bool Sudoku::isValueValid(int x, int y, int value)
 
 void Sudoku::markToProcess(int x, int y)
 {
-	_toProcessLines[y] = true;
+	_toProcessRow[y] = true;
 	_toProcessColumns[x] = true;
 	_toProcessBlocks[((x-(x%3))/3)+(y-(y%3))] = true;
 }
 
-bool Sudoku::processLine(int y)
+bool Sudoku::processRow(int y)
 {
-	_toProcessLines[y] = false;
+	_toProcessRow[y] = false;
 
 	for(int x = 0; x <= 8; x++)
 	{
@@ -56,22 +56,16 @@ bool Sudoku::processLine(int y)
 
 	for(int value = 1; value <= 9; value++)
 	{
-		std::vector<int> xPossibles;
+		std::vector<std::tuple<int, int>> cellPossibles;
+
 		for(int x = 0; x <= 8; x++)
 			if(isValueValid(x, y, value))
-				xPossibles.push_back(x);
+				cellPossibles.push_back(std::make_tuple(x, y));
 
-		if(xPossibles.size() == 1)
-		{
-			setValue(xPossibles.front(), y, value);
-		}
-		else if(false) //todo
-		{
-			//all valid cells for `value` are in the same block, so the value can't be on any other row in that block
-		}
+		_processPossibleCells(cellPossibles, value);
 	}
 
-	return _toProcessLines[y];
+	return _toProcessRow[y];
 }
 
 bool Sudoku::processColumn(int x)
@@ -88,19 +82,13 @@ bool Sudoku::processColumn(int x)
 
 	for(int value = 1; value <= 9; value++)
 	{
-		std::vector<int> yPossibles;
+		std::vector<std::tuple<int, int>> cellPossibles;
+
 		for(int y = 0; y <= 8; y++)
 			if(isValueValid(x, y, value))
-				yPossibles.push_back(y);
+				cellPossibles.push_back(std::make_tuple(x, y));
 
-		if(yPossibles.size() == 1)
-		{
-			setValue(x, yPossibles.front(), value);
-		}
-		else if(false) //todo
-		{
-			//all valid cells for `value` are in the same block, so the value can't be on any other column in that block
-		}
+		_processPossibleCells(cellPossibles, value);
 	}
 
 	return _toProcessColumns[x];
@@ -124,23 +112,14 @@ bool Sudoku::processBlock(int b)
 
 	for(int value = 1; value <= 9; value++)
 	{
-		std::vector<std::tuple<int, int>> xyPossibles;
+		std::vector<std::tuple<int, int>> cellPossibles;
 
 		for(int x = ((b%3)*3); x <= ((b%3)*3)+2; x++)
 			for(int y = b-(b%3); y <= (b-(b%3))+2; y++)
 				if(isValueValid(x, y, value))
-					xyPossibles.push_back(std::make_tuple(x, y));
+					cellPossibles.push_back(std::make_tuple(x, y));
 
-
-		if(xyPossibles.size() == 1)
-		{
-			std::tuple<int, int> tuple = xyPossibles.front();
-			setValue(std::get<0>(tuple), std::get<1>(tuple), value);
-		}
-		else if(false) //todo
-		{
-			//all valid cells for `value` are in the same row/column for that block, so the value can't be on in any other block for that row/column
-		}
+		_processPossibleCells(cellPossibles, value);
 	}
 
 	return _toProcessBlocks[b];
@@ -158,7 +137,7 @@ bool Sudoku::findSolution()
 			if(_toProcessColumns[i] && processColumn(i))
 				keepProcessing = true;
 
-			if(_toProcessLines[i] && processLine(i))
+			if(_toProcessRow[i] && processRow(i))
 				keepProcessing = true;
 
 			if(_toProcessBlocks[i] && processBlock(i))
@@ -172,6 +151,24 @@ bool Sudoku::findSolution()
 			return false;
 
 	return true;
+}
+
+void Sudoku::_processPossibleCells(std::vector<std::tuple<int, int>> cellPossibles, int value)
+{
+	if(cellPossibles.size() == 1)
+	{
+		std::tuple<int, int> cell = cellPossibles.front();
+		setValue(std::get<0>(cell), std::get<1>(cell), value);
+	}
+	else if(false) //todo
+	{
+		//all valid cells for `value` are in the same block and line (row or column), so the value can't be on in any other block on that line (row or column)
+	}
+}
+
+bool Sudoku::_areCellsInSameBlockAndLine(std::vector<std::tuple<int, int>> cells)
+{
+	return false;
 }
 
 ostream & operator<<(ostream &stream, Sudoku sudoku)

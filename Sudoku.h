@@ -8,9 +8,11 @@ class Sudoku
 {
 	private:
 		Case _cases[81];
-		bool _toProcessLines[9];
+		bool _toProcessRow[9];
 		bool _toProcessColumns[9];
 		bool _toProcessBlocks[9];
+		void _processPossibleCells(std::vector<std::tuple<int, int>> cells, int value);
+		bool _areCellsInSameBlockAndLine(std::vector<std::tuple<int, int>> cells);
 
 	public:
 		Sudoku();
@@ -20,7 +22,7 @@ class Sudoku
 		bool isValueValid(int x, int y, int value);
 
 		void markToProcess(int x, int y);
-		bool processLine(int y);
+		bool processRow(int y);
 		bool processColumn(int x);
 		bool processBlock(int b);
 
